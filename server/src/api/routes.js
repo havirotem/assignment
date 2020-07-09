@@ -7,7 +7,7 @@ const { updatePromotion } = require('./promotions/updatePromotion');
 
 const router = Router();
 
-router.get('/initial', generatePromotions); // should be post
+router.get('/initial', generatePromotions);
 router.get('/', getAllPromotions);
 router.delete('/delete', deletePromotion);
 router.post('/duplicate', clonePromotion);

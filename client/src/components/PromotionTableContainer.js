@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import backend from '../services/backend';
 import PromotionTable from './PromotionsTable';
 import Form from './common/Form';
+import DialogAction from './common/DialogAction';
 
 export const PromotionTableContainer = () => {
   const [promotions, setPromotions] = useState({});
@@ -13,6 +14,7 @@ export const PromotionTableContainer = () => {
   const [pagesCount, setPagesCount] = useState(0);
   const [openForm, setOpenForm] = useState(false);
   const [promotionsToEdit, setPromotionToEdit] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
 
   const fetchData = async() => {
     try {
@@ -28,6 +30,7 @@ export const PromotionTableContainer = () => {
   }
 
   const handleNextPage = async () => {
+    setIsLoading(true);
     const res = await backend.getPromotions(page);
     setPage(res.current_page);
     setTimeout(() => {
@@ -37,13 +40,9 @@ export const PromotionTableContainer = () => {
   }
 
   useEffect(() => {
-    if (init) {
-      fetchData();
-    }
+    if (init) fetchData();
     if (!isLoading) return;
-    else {
-      handleNextPage();
-    }
+    else handleNextPage();
   }, [isLoading, init]);
 
   const handleAction = (actionName, rowId) => {
@@ -58,7 +57,6 @@ export const PromotionTableContainer = () => {
         handleEdit(rowId);
         return;
     }
-
   }
 
   const handleGenerate = async () => {
@@ -89,10 +87,15 @@ export const PromotionTableContainer = () => {
   const handleDuplicate = async (rowId) => {
     try {
       await backend.duplicatePromotion(rowId);
-      alert('new promotion added to the list');
+      // alert('new promotion added to the list');
+      setOpenDialog(true);
     } catch (err) {
       console.log(err);
     }
+  }
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
   }
 
   const handleSubmitForm = async (data) => {
@@ -121,6 +124,14 @@ export const PromotionTableContainer = () => {
 
   return (
     <>
+    {openDialog &&
+      <DialogAction
+        open={openDialog}
+        onClose={handleCloseDialog}
+        title={'Update Information'}
+        content={'Promotion duplicated!'}
+     />
+    }
     {openForm && promotionsToEdit &&
       <Form
         open={openForm}

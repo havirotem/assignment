@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Paper, Table, TableBody, TableCell, TableRow, TableContainer, Checkbox, TableHead } from '@material-ui/core';
-import ActionButton from './common/ActionButton';
-import Button from './common/Button';
+import { Paper, Table, TableBody, TableCell, TableRow, TableContainer, Checkbox, TableHead, CircularProgress } from '@material-ui/core';
+import ActionButtons from './common/ActionButtons';
+import GenerateButton from './common/Button';
 
 const useStyles = makeStyles({
   root: {
@@ -19,9 +19,9 @@ export const PromotionTable = (props) => {
   const [checked, setChecked] = useState(null);
   const scrollContainer = useRef(null);
 
-   const handleScroll = () => {
+  const handleScroll = () => {
     if (currentPage >= pagesCount || isLoading) return;
-    if(scrollContainer.current.scrollTop + scrollContainer.current.offsetHeight >= scrollContainer.current.scrollHeight) {
+    if (scrollContainer.current.scrollTop + scrollContainer.current.offsetHeight >= scrollContainer.current.scrollHeight) {
       onFetchNextPages();
     }
   }
@@ -34,19 +34,23 @@ export const PromotionTable = (props) => {
   const renderTableHeader = () => {
     const headRow = []
      Object.keys(metadata).forEach((key) => {
-      headRow.push(<TableCell key={key}>{metadata[key].key}</TableCell>);
+      headRow.push(
+        <TableCell
+          key={key}
+        >{metadata[key].key}
+        </TableCell>);
     });
     return headRow;
   }
 
   const handleChange = key => {
-    if(key === checked) setChecked(null);
+    if (key === checked) setChecked(null);
     else setChecked(key);
   };
 
   const RenderRow = (row) => {
     const tableRow = [];
-    let id = row._id;
+    const id = row._id;
     tableRow.push(
       <TableCell key={id}>
         <Checkbox key='checkbox'
@@ -58,38 +62,62 @@ export const PromotionTable = (props) => {
     );
     Object.keys(row).forEach((key) => {
       if (key !== '_id') {
-        tableRow.push( <TableCell key={key}> {(row[key])}</TableCell>);
+        tableRow.push(
+          <TableCell
+            key={key}>{(row[key])}
+          </TableCell>);
       }
     });
     tableRow.push( checked === id ?
-    <TableCell key='actionButton'><ActionButton rowId = { id } onAction = {onAction} ischecked={checked}/></TableCell> : <TableCell/>
+      <TableCell
+        key='actionButton'>
+          <ActionButtons
+            rowId={id}
+            onAction={onAction}
+            ischecked={checked}/>
+      </TableCell> : <TableCell/>
     );
     return tableRow;
-   }
+  }
 
   const renderTableContent = () => {
     let promotionList = Object.values(data);
-    return promotionList.map((row, index)=>{
-     return <TableRow key={row._id}>{RenderRow(row)}</TableRow>
-      })
+    return promotionList.map((row, index) => {
+      return (
+        <TableRow
+          key={row._id}>{RenderRow(row)}
+        </TableRow>
+      )
+    })
   }
 
   return (
     <>
-    <Button onClick={onGenerate} title='generate new promotions' />
-      <Paper key='paper' className={classes.root}>
-        <TableContainer key='table conatinr' className={classes.container} ref={scrollContainer}>
-          <Table key ='promotion table' stickyHeader aria-label='promotion table'>
-            <TableHead key='TableHead'>
+    <GenerateButton
+      onClick={onGenerate}
+      title='Generate new promotions'
+    />
+    <Paper
+      key='paper'
+      className={classes.root}>
+        <TableContainer
+          key='table-conatiner'
+          className={classes.container}
+          ref={scrollContainer}>
+          <Table
+            key ='promotion-table'
+            stickyHeader
+            aria-label='promotion-table'>
+            <TableHead key='table-head'>
               {renderTableHeader()}
             </TableHead>
-            <TableBody key='table body' >
-              {renderTableContent()}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        {isLoading && <div>loading...</div>}
-      </Paper>
+            <TableBody key='table-body' >
+            {renderTableContent()}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      { isLoading && <CircularProgress />}
+    </Paper>
     </>
   );
 }

@@ -18,7 +18,6 @@ async function getAllPromotions(req, res, next) {
       { key: 'User Group Name', value: 'text' },
       { key: 'Action Button', type: 'button' },
     ];
-
     const pages = (promtionLength / TOTAL_RECORDS);
     res.json({
       promotions,

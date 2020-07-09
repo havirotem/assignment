@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { TextField, Button, Grid, DialogTitle, Dialog, MenuItem, Select } from '@material-ui/core';
 import { createStyles, makeStyles } from '@material-ui/core';
@@ -27,7 +27,7 @@ export const useStyle = makeStyles(() =>
 );
 
 const Form = ( props ) => {
-  const {open, items, onClose, metadata, title } = props
+  const { open, items, onClose, metadata, title } = props
   const { handleSubmit, register } = useForm();
   const classes = useStyle();
 
@@ -58,36 +58,43 @@ const Form = ( props ) => {
       />
       )
       itemData.push( metadata[key].type === 'select' &&
-      <select ref={register}
-        name={metadata[key].key}
-        defaultValue = {items[0][metadata[key].key]}
-      >
-      {
-        metadata[key].type === 'select' &&
-        (metadata[key].options).map((option) => (
-          <option key={option.value} value={option.value} name={option.value}>
-            {option.value}
-          </option>
-        ))
-      }
-    </select>
+        <select ref={register}
+          name={metadata[key].key}
+          defaultValue = {items[0][metadata[key].key]}
+        >
+          {
+            metadata[key].type === 'select' &&
+            (metadata[key].options).map((option) => (
+              <option key={option.value} value={option.value} name={option.value}>
+                {option.value}
+              </option>
+            ))
+          }
+        </select>
     )
     })
     return itemData;
   }
 
   return (
-    <Dialog open={open} onClose={handleSubmitForm}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Grid className={classes.container}>
-          <DialogTitle className={classes.header}>{title}</DialogTitle>
+    <Dialog
+      open={open}
+      onClose={handleSubmitForm}>
+      <form
+        onSubmit={handleSubmit(onSubmit)}>
+        <Grid
+          className={classes.container}>
+          <DialogTitle
+            className={classes.header}>{title}
+          </DialogTitle>
           {createFormContent(items, metadata)}
-            <Button className={classes.submit}
-              type='submit'
-              fullWidth
-            >
-              Submit
-            </Button>
+          <Button
+            className={classes.submit}
+            type='submit'
+            fullWidth
+          >
+            Submit
+          </Button>
         </Grid>
       </form>
     </Dialog>

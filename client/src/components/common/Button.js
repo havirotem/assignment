@@ -10,15 +10,19 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const GeneratePromotionButton = ({ onClick, title }) => {
+const GenerateButton = ({ onClick, title }) => {
   const classes = useStyles();
   return (
     <Grid className={classes.generateBotten}>
-      <Button variant="contained" color="primary" onClick={onClick}>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={onClick}
+      >
         {title}
       </Button>
     </Grid>
   );
 }
 
-export default GeneratePromotionButton;
+export default GenerateButton;

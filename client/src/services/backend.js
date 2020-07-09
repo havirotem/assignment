@@ -6,7 +6,7 @@ async function getPromotions(currentPage) {
   try {
     const result = await axios.get(promotionPath,{
       params: {
-        current_page: currentPage
+        currentPage
       }
     });
     return result.data;

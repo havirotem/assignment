@@ -5,8 +5,8 @@ const TOTAL_RECORDS = 20;
 async function getAllPromotions(req, res, next) {
   try {
     let nextPage = 1;
-    if (req.query.current_page) {
-      nextPage = Number(req.query.current_page) + 1;
+    if (req.query.currentPage) {
+      nextPage = Number(req.query.currentPage) + 1;
     }
     const { promotions, promtionLength } = await getPromotions(nextPage, TOTAL_RECORDS);
     const metadata = [

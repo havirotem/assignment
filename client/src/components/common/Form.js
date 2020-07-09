@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { TextField, Button, Grid, DialogTitle, Dialog, MenuItem, Select } from '@material-ui/core';
+import { TextField, Button, Grid, DialogTitle, Dialog } from '@material-ui/core';
 import { createStyles, makeStyles } from '@material-ui/core';
 import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles';
 
@@ -42,7 +42,6 @@ const Form = ( props ) => {
   const createFormContent = (items, metadata) => {
     const itemData = []
     Object.keys(metadata).forEach((key) => {
-      let isSelect =  metadata[key].type === 'select' ? true: false;
       itemData.push( metadata[key].type !== 'checkbox' &&  metadata[key].type !== 'button' && metadata[key].type !== 'select' &&
         <TextField
           id={metadata[key].key}
@@ -53,7 +52,6 @@ const Form = ( props ) => {
           defaultValue = {items[0][metadata[key].key]}
           margin='normal'
           type={metadata[key].type}
-          select={isSelect} ref={register}
           inputRef={register({ required: false })}
       />
       )

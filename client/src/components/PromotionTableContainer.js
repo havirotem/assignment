@@ -32,9 +32,11 @@ export const PromotionTableContainer = () => {
   const handleNextPage = async () => {
     setIsLoading(true);
     const res = await backend.getPromotions(page);
-    setPage(res.current_page);
+    setPage(res.currentPage);
     setTimeout(() => {
-      setPromotions(prevState => ([...prevState, ...res.promotions]));
+      const promotionArr = [...promotions, ...res.promotions];
+      const filteredPromotions = promotionArr.filter((v,i,a)=>a.findIndex(t=>(t._id === v._id))===i);
+      setPromotions(filteredPromotions);
       setIsLoading(false);
     }, 1000);
   }
@@ -87,7 +89,6 @@ export const PromotionTableContainer = () => {
   const handleDuplicate = async (rowId) => {
     try {
       await backend.duplicatePromotion(rowId);
-      // alert('new promotion added to the list');
       setOpenDialog(true);
     } catch (err) {
       console.log(err);

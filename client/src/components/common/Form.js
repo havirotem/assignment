@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { TextField, Button, Grid, DialogTitle, Dialog, MenuItem } from '@material-ui/core';
+import { TextField, Button, Grid, DialogTitle, Dialog, MenuItem, Select } from '@material-ui/core';
 import { createStyles, makeStyles } from '@material-ui/core';
 import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles';
 
@@ -22,9 +22,6 @@ export const useStyle = makeStyles(() =>
     container: {
       flexWrap: 'wrap',
       padding: theme.spacing(2),
-      [theme.breakpoints.up('md')]: {
-        width: '25vw',
-      },
     },
   })
 );
@@ -35,45 +32,52 @@ const Form = ( props ) => {
   const classes = useStyle();
 
   const onSubmit = (data) => {
-    handleCloseForm(data);
+    handleSubmitForm(data);
   };
 
-  const handleCloseForm = (data) => {
+  const handleSubmitForm = (data) => {
     onClose(data);
-  }
+  };
 
   const createFormContent = (items, metadata) => {
     const itemData = []
     Object.keys(metadata).forEach((key) => {
-      itemData.push( metadata[key].type !== 'checkbox' &&  metadata[key].type !== 'button' &&
+      let isSelect =  metadata[key].type === 'select' ? true: false;
+      itemData.push( metadata[key].type !== 'checkbox' &&  metadata[key].type !== 'button' && metadata[key].type !== 'select' &&
         <TextField
-        key = {metadata[key].key}
-        name = {metadata[key].key}
-        autoFocus
-        fullWidth
-        label={metadata[key].key}
+          id={metadata[key].key}
+          name={metadata[key].key}
+          autoFocus
+          fullWidth
+          label={metadata[key].key}
+          defaultValue = {items[0][metadata[key].key]}
+          margin='normal'
+          type={metadata[key].type}
+          select={isSelect} ref={register}
+          inputRef={register({ required: false })}
+      />
+      )
+      itemData.push( metadata[key].type === 'select' &&
+      <select ref={register}
+        name={metadata[key].key}
         defaultValue = {items[0][metadata[key].key]}
-        margin='normal'
-        type= {metadata[key].type}
-        inputRef={register({ required: false })}
-        format="MM/dd/yyyy"
       >
       {
         metadata[key].type === 'select' &&
         (metadata[key].options).map((option) => (
-        <MenuItem key={option.value} value={option.value}>
-          {option.value}
-        </MenuItem>
-      ))
+          <option key={option.value} value={option.value} name={option.value}>
+            {option.value}
+          </option>
+        ))
       }
-      </TextField>
-      )
+    </select>
+    )
     })
     return itemData;
   }
 
   return (
-    <Dialog open={open} onClose={handleCloseForm}>
+    <Dialog open={open} onClose={handleSubmitForm}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid className={classes.container}>
           <DialogTitle className={classes.header}>{title}</DialogTitle>

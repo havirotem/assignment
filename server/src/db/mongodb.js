@@ -10,7 +10,6 @@ async function getSingleClient() {
       { useUnifiedTopology: true },
     );
     await connection;
-    console.info('[db] Connected successfully to mongodb server');
   }
   return connection;
 }

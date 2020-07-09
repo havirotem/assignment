@@ -11,7 +11,7 @@ async function getPromotions(nextPage, totalRecords) {
   try {
     const collection = await getConnection();
     const skipRecords = totalRecords * (nextPage - 1);
-    const promotions = await collection.find().limit(totalRecords).skip(skipRecords).toArray();
+    const promotions = await collection.find().sort({ 'Start Date': -1 }).limit(totalRecords).skip(skipRecords).toArray();
     const promtionLength = await collection.find().count();
     return { promotions, promtionLength };
   } catch (err) {

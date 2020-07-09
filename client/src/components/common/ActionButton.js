@@ -1,10 +1,7 @@
-import React, { useState} from 'react';
-import { Button, Menu, MenuItem } from '@material-ui/core';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import React from 'react';
+import { MenuItem } from '@material-ui/core';
 
 const ActionButton = ({ rowId, onAction }) => {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [open, isOpen] = useState(false);
   const menuAction = [
     {
       title: 'Edit',
@@ -20,38 +17,18 @@ const ActionButton = ({ rowId, onAction }) => {
     },
   ]
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-    isOpen(true);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
   const createMenu = () => {
     const menuItems = []
     Object.keys(menuAction).forEach((menuitem) => {
-      menuItems.push(<MenuItem onClick={() => onAction(menuAction[menuitem].name,rowId)}>{menuAction[menuitem].title}</MenuItem>)
+      menuItems.push(<MenuItem key= {[menuitem].name} onClick={() => onAction(menuAction[menuitem].name,rowId)}>{menuAction[menuitem].title}</MenuItem>)
     })
     return menuItems;
   }
 
   return (
-    <div>
-      <Button aria-controls="menu" aria-haspopup="true" onClick={handleClick} open={open}>
-      <MoreVertIcon />
-      </Button>
-      <Menu
-        id="menu"
-        anchorEl={anchorEl}
-        keepMounted
-        open={open}
-        onClose={handleClose}
-      >
+    <>
         {createMenu()}
-      </Menu>
-    </div>
+    </>
   );
 }
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import backend from '../services/backend';
-import PromotionTable from './promotionTable';
+import PromotionTable from './PromotionsTable';
 import Form from './common/Form';
 
 export const PromotionTableContainer = () => {
@@ -9,7 +9,7 @@ export const PromotionTableContainer = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setErrors] = useState(false);
   const [page, setPage] = useState(1);
-  const [isInitial, setInitial] = useState(true);
+  const [init, setInit] = useState(true);
   const [pagesCount, setPagesCount] = useState(0);
   const [openForm, setOpenForm] = useState(false);
   const [promotionsToEdit, setPromotionToEdit] = useState(null);
@@ -19,7 +19,7 @@ export const PromotionTableContainer = () => {
       const res = await backend.getPromotions(page);
       setPromotions(res.promotions);
       setMetadata(res.metadata);
-      setInitial(false);
+      setInit(false);
       setPage(res.currentPage);
       setPagesCount(res.totalPages);
     } catch(err) {
@@ -37,14 +37,14 @@ export const PromotionTableContainer = () => {
   }
 
   useEffect(() => {
-    if (isInitial) {
+    if (init) {
       fetchData();
     }
     if (!isLoading) return;
     else {
       handleNextPage();
     }
-  }, [isLoading, isInitial]);
+  }, [isLoading, init]);
 
   const handleAction = (actionName, rowId) => {
     switch(actionName) {
@@ -89,12 +89,13 @@ export const PromotionTableContainer = () => {
   const handleDuplicate = async (rowId) => {
     try {
       await backend.duplicatePromotion(rowId);
+      alert('new promotion added to the list');
     } catch (err) {
       console.log(err);
     }
   }
 
-  const handleCloseForm = async (data) => {
+  const handleSubmitForm = async (data) => {
     let id = promotionsToEdit[0]._id;
     setOpenForm(false);
     let diff = Object.keys(data).reduce((diff, key) => {
@@ -107,13 +108,10 @@ export const PromotionTableContainer = () => {
     if (Object.keys(diff).length > 0) {
       try {
         const { data } = await backend.updatePromotion(id,diff);
-        let promotion = promotions.find((promotion) => {
-          return promotion._id === data._id;
-       });
-       if (promotion) {
-         promotion = data
-       }
-       setPromotions(promotions);
+        const index = promotions.findIndex(x => x._id === data._id)
+        const updatePrmotions = [...promotions];
+        updatePrmotions[index] = data
+        setPromotions(updatePrmotions);
       } catch (err) {
         console.log(err);
       }
@@ -128,7 +126,7 @@ export const PromotionTableContainer = () => {
         open={openForm}
         metadata={metadata}
         items={promotionsToEdit}
-        onClose={handleCloseForm}
+        onClose={handleSubmitForm}
         title={'Edit Promotion From'}
      />
     }

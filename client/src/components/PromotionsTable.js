@@ -49,7 +49,7 @@ export const PromotionTable = (props) => {
     let id = row._id;
     tableRow.push(
       <TableCell key={id}>
-        <Checkbox
+        <Checkbox key='checkbox'
           checked={id === checked}
           onChange={() => handleChange(id)}
           value="primary"
@@ -77,17 +77,18 @@ export const PromotionTable = (props) => {
   return (
     <>
     <Button onClick={onGenerate} title='generate new promotions' />
-      <Paper className={classes.root}>
-        <TableContainer className={classes.container} ref={scrollContainer}>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead className={classes.tableHead}>
+      <Paper key='paper' className={classes.root}>
+        <TableContainer key='table conatinr' className={classes.container} ref={scrollContainer}>
+          <Table key ='promotion table' stickyHeader aria-label='promotion table'>
+            <TableHead key='TableHead'>
               {renderTableHeader()}
             </TableHead>
-            <TableBody>
+            <TableBody key='table body' >
               {renderTableContent()}
             </TableBody>
           </Table>
         </TableContainer>
+        {isLoading && <div>loading...</div>}
       </Paper>
     </>
   );
